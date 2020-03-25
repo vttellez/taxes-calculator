@@ -96,10 +96,15 @@ namespace Taxes.Services.Proxy
 
         public async Task<OrderTax> GetOrderTaxRate(Order request)
         {
-            string orderTaxReate = "taxes";
-            var url = $"{GetBaseAddress()}{orderTaxReate}";
+            string url = GetOrderTaxesUrl();
             JObject f = await PostAsync<TaxJarOrder, JObject>(url, request.ToTaxJarOrder());
             return f.ToOrdertax();
+        }
+
+        private string GetOrderTaxesUrl()
+        {
+            string orderTaxReate = "taxes";
+            return $"{GetBaseAddress()}{orderTaxReate}";
         }
     }
 }
