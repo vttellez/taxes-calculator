@@ -1,0 +1,23 @@
+{
+   "origin":{
+      "country":"US",
+      "zipCode5":"40229",
+      "state":"KY"
+   },
+   "destination":{
+      "country":"US",
+      "zipCode5":"40218",
+      "state":"KY"
+   },
+   "amount":12.3,
+   "shipping":1.5,
+   "lineItems":[
+      {
+         "quantity":1,
+         "product":{
+            "taxCode":"1236",
+            "price":2.5
+         }
+      }
+   ]
+}
