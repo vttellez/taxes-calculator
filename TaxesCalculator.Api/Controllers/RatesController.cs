@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Taxes.Services;
+using Taxes.Services.Communication;
 using Taxes.Services.Model;
 using TaxesCalculator.Core.Domain;
 
@@ -27,15 +28,8 @@ namespace TaxesCalculator.Api.Controllers
         {
             try
             {
-                // This can be refactored since is a duplicate on PostAsync to process response 
-
                 var response = await _taxRateService.GetTaxRate(request);
-
-                if (!response.Success)
-                {
-                    BadRequest(response.Message);
-                }
-                return Ok(response.Resource);
+                return ProcessResponse(response);
             }
             catch  //(Exception ex)
             {
@@ -45,6 +39,14 @@ namespace TaxesCalculator.Api.Controllers
             }
         }
 
+        private IActionResult ProcessResponse<T>(Response<T> response)
+        {
+            if (!response.Success)
+            {
+                BadRequest(response.Message);
+            }
+            return Ok(response.Resource);
+        }
 
         [HttpPost]
         [Produces("application/json")]
@@ -54,13 +56,7 @@ namespace TaxesCalculator.Api.Controllers
             try
             {
                 var response = await _taxRateService.GetOrderTax(request);
-
-                if (!response.Success)
-                {
-                    BadRequest(response.Message);
-                }
-
-                return Ok(response.Resource);
+                return ProcessResponse(response);
             }
             catch //(Exception ex)
             {
