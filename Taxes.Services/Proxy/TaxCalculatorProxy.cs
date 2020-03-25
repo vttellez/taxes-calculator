@@ -103,8 +103,7 @@ namespace Taxes.Services.Proxy
 
         private string GetOrderTaxesUrl()
         {
-            string orderTaxReate = "taxes";
-            return $"{GetBaseAddress()}{orderTaxReate}";
+            return $"{GetBaseAddress()}taxes";
         }
     }
 }
