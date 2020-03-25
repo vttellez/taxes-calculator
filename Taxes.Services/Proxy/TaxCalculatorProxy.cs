@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Taxes.Services.Model;
+using Taxes.Services.TaxJarModels;
+using Taxes.Services.TaxJarModels.Extensions;
+using TaxesCalculator.Core.Domain;
 using TaxesCalculator.Core.Proxy;
 using TaxesCalculator.Core.Proxy.Serialization;
 
@@ -25,7 +26,7 @@ namespace Taxes.Services.Proxy
             return _httpClient.BaseAddress.ToString();
         }
 
-        public async Task<GetTaxRateResponse> GetTaxRate(GetTaxRateRequest request)
+        public async Task<Rate> GetTaxRate(GetTaxRateRequest request)
         {
             if (request == null)
             {
@@ -34,7 +35,7 @@ namespace Taxes.Services.Proxy
 
             var url = BuildUrl($"{GetBaseAddress()}{endPoint}/{GetZipFullCode(request)}", request);
             JObject f = await GetAsync<JObject>(url);
-            return ToRateResponse(f);
+            return f.ToRate();
         }
 
         internal string BuildUrl(string url, GetTaxRateRequest request)
@@ -92,27 +93,16 @@ namespace Taxes.Services.Proxy
             return HasQuestionMark(url) ? "&" : "?";
         }
 
-        internal GetTaxRateResponse ToRateResponse(JObject jsonObject)
+
+        public async Task<OrderTax> GetOrderTaxRate(Order request)
         {
-            var rate = jsonObject["rate"];
-            return new GetTaxRateResponse
-            {
-                Rate = new Rate
-                {
-                    City = rate["city"].ToString(),
-                    CityRate = Convert.ToDecimal(rate["city_rate"]),
-                    DistrictRate = Convert.ToDecimal(rate["combined_district_rate"]),
-                    CombinedRate = Convert.ToDecimal(rate["combined_rate"]),
-                    Country = rate["country"].ToString(),
-                    CountryRate = Convert.ToDecimal(rate["country_rate"]),
-                    County = rate["county"].ToString(),
-                    CountyRate = Convert.ToDecimal(rate["county_rate"]),
-                    IsFreightTaxable = Convert.ToBoolean(rate["freight_taxable"]),
-                    State = rate["state"].ToString(),
-                    StateRate = Convert.ToDecimal(rate["state_rate"]),
-                    ZipCode = Convert.ToString(rate["zip"])
-                }
-            };
+            string orderTaxReate = "taxes";
+            var url = $"{GetBaseAddress()}{orderTaxReate}";
+            JObject f = await PostAsync<TaxJarOrder, JObject>(url, request.ToTaxJarOrder());
+            return f.ToOrdertax();
         }
     }
 }
+
+
+

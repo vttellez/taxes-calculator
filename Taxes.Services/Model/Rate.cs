@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-
-namespace Taxes.Services.Model
+﻿namespace Taxes.Services.Model
 {
     public class Rate
     {
@@ -24,11 +21,8 @@ namespace Taxes.Services.Model
         public bool IsFreightTaxable { get; set; }
 
         public string State { get; set; }
-        //"state": "CA",
+
         public decimal StateRate { get; set; }
-        //"state_rate": "0.0625",
-        //"zip": "90404"
-        //}
 
         public string ZipCode { get; set; }
     }
